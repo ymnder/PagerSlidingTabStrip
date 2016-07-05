@@ -55,12 +55,16 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		android.R.attr.textColor
     };
 	// @formatter:on
+	public interface OnTabClickListener {
+		public void onTabClick(int position);
+ 	}
 
 	private LinearLayout.LayoutParams defaultTabLayoutParams;
 	private LinearLayout.LayoutParams expandedTabLayoutParams;
 
 	private final PageListener pageListener = new PageListener();
 	public OnPageChangeListener delegatePageListener;
+	private OnTabClickListener delegateOnTabClickListener;
 
 	private LinearLayout tabsContainer;
 	private ViewPager pager;
@@ -185,7 +189,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	public void setOnPageChangeListener(OnPageChangeListener listener) {
 		this.delegatePageListener = listener;
 	}
-
+	public void setOnTabClickListener(OnTabClickListener listener) {
+		this.delegateOnTabClickListener = listener;
+	}
 	public void notifyDataSetChanged() {
 
 		tabsContainer.removeAllViews();
@@ -248,6 +254,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		tab.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (delegateOnTabClickListener != null) {
+ 					delegateOnTabClickListener.onTabClick(position);
+				}
 				pager.setCurrentItem(position);
 			}
 		});
